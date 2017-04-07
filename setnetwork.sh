@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Hostname:"
+echo "Hostname (fqdn):"
 read hostname
 if [ "$hostname" = "" ]; then
         echo "Hostname is mandatory!"
@@ -69,7 +69,7 @@ network="$ipnet.0"
 
 echo "Please confirm:"
 echo "############################"
-echo "Hostname: " $hostname
+echo "Hostname (fqdn): " $hostname
 echo "IP: " $ip
 echo "Netmask: " $mask
 echo "Gateway :" $gw
@@ -107,4 +107,10 @@ cat /etc/network/interfaces
 echo ""
 echo "setting hostname..."
 hostnamectl set-hostname $hostname
+
+IFS='.' read -a fqdn <<< "$hostname"
+host="${fqdn[0]}"
+cat /etc/hosts | grep -v 127.0.1.1 > /etc/hosts
+echo "127.0.1.1         $hostname        $host" >> /etc/hosts
+
 echo "done bootsrtaping!"
