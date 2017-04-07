@@ -87,7 +87,8 @@ if [ "$confirm" != "y" ]; then
 fi
 
 echo "setting NIC...."
-awk -f changeInterface.awk /etc/network/interfaces device=$nic mode=static address=$ip netmask=$mask gateway=$gw broadcast=$broadcast network=$network dns-nameservers=$dns dns-search=$dnssearch > /etc/network/interfaces
+awk -f changeInterface.awk /etc/network/interfaces action=remove device=$nic > /etc/network/interfaces
+awk -f changeInterface.awk /etc/network/interfaces action=add device=$nic mode=static address=$ip netmask=$mask gateway=$gw broadcast=$broadcast network=$network dns-nameservers=$dns dns-search=$dnssearch > /etc/network/interfaces
 echo "done!"
 echo "############################"
 cat /etc/network/interfaces
