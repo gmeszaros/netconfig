@@ -88,7 +88,7 @@ fi
 
 echo "setting NIC...."
 rm -rf /tmp/interfaces && awk -f changeInterface.awk /etc/network/interfaces action=remove device=$nic >> /tmp/interfaces
-awk -f changeInterface.awk /tmp/interfaces action=add device=$nic mode=static address=$ip netmask=$mask \
+rm -rf /tmp/interfaces2 && awk -f changeInterface.awk /tmp/interfaces action=add device=$nic mode=static address=$ip netmask=$mask \
  gateway=$gw broadcast=$broadcast network=$network >> /tmp/interfaces2
 awk -f changeInterface.awk /tmp/interfaces2 device=$nic mode=static nameservers=$dns search=$dnssearch domain=$dnssearch | \
  grep -v dns-nameservers | grep -v dns-search | grep -v dns-domain | \
