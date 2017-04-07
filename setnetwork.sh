@@ -115,4 +115,6 @@ echo "127.0.1.1         $hostname        $host" >> /tmp/hosts
 cp /etc/hosts /etc/hosts.bak
 cp /tmp/hosts /etc/hosts
 
+rm -rf /tmp/hosts
+
 echo "done bootsrtaping!"
