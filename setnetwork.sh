@@ -87,8 +87,20 @@ if [ "$confirm" != "y" ]; then
 fi
 
 echo "setting NIC...."
-awk -f changeInterface.awk /etc/network/interfaces action=remove device=$nic > /etc/network/interfaces
-awk -f changeInterface.awk /etc/network/interfaces action=add device=$nic mode=static address=$ip netmask=$mask gateway=$gw broadcast=$broadcast network=$network dns-nameservers=$dns dns-search=$dnssearch > /etc/network/interfaces
+rm -rf /tmp/interfaces && awk -f changeInterface.awk /etc/network/interfaces action=remove device=$nic >> /tmp/interfaces
+awk -f changeInterface.awk /tmp/interfaces action=add device=$nic mode=static address=$ip netmask=$mask \
+ gateway=$gw broadcast=$broadcast network=$network >> /tmp/interfaces
+awk -f changeInterface.awk /tmp/interfaces device=$nic mode=static nameservers=$dns search=$dnssearch domain=$dnssearch | \
+ grep -v dns-nameservers | grep -v dns-search | grep -v dns-domain | \
+ sed -e 's/nameservers/dns-nameservers/g' | \
+ sed -e 's/search/dns-search/g' | \
+ sed -e 's/domain/dns-domain/g' >> /tmp/interfaces_new
+
+cp /etc/network/interfaces /etc/network/interfaces.bak
+cp /tmp/interfaces_new /etc/network/interfaces
+
+rm -rf /tmp/interfaces*
+
 echo "done!"
 echo "############################"
 cat /etc/network/interfaces
