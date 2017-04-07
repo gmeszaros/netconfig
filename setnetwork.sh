@@ -110,7 +110,9 @@ hostnamectl set-hostname $hostname
 
 IFS='.' read -a fqdn <<< "$hostname"
 host="${fqdn[0]}"
-cat /etc/hosts | grep -v 127.0.1.1 > /etc/hosts
-echo "127.0.1.1         $hostname        $host" >> /etc/hosts
+rm -rf /tmp/hosts && cat /etc/hosts | grep -v 127.0.1.1 >> /tmp/hosts
+echo "127.0.1.1         $hostname        $host" >> /tmp/hosts
+cp /etc/hosts /etc/hosts.bak
+cp /tmp/hosts /etc/hosts
 
 echo "done bootsrtaping!"
