@@ -14,7 +14,8 @@ function writeStatic(device, fields, orders) {
     for (f in fields) {
 	value = fields[f];
 	if (length(value)) {
-	    printf("    %s %s\n", f, value);
+	    # Allow updates only
+	    #printf("    %s %s\n", f, value);
 	}
     }
     print "";
@@ -64,7 +65,7 @@ BEGIN { start = 0;
         print "Both DHCP and static properties are defined";
         usage();
         exit 1;
-    } else if (!mode && !remove) {
+    } else if (mode && !mode && !remove) {  # GaborM note: disabled mode check for our specific case
 	print "Missing mode input";
 	usage();
 	exit 1;
@@ -79,7 +80,7 @@ BEGIN { start = 0;
 
 {
     # auto <device> line
-    if ($1 == "auto") {
+    if ($1 == "/#*/auto") {
 	if ($2 != device) {
 	    # We come to different device
 	    # Good place to write all the settings
@@ -102,7 +103,7 @@ BEGIN { start = 0;
 	next;
     }
     # iface <device> .. line
-    else if ($1 == "iface") {
+    else if ($1 == "/#*/iface") {
 
 	if ($2 != device) {
 	    # We come to different device
@@ -127,7 +128,8 @@ BEGIN { start = 0;
 	    targetDev = 1;
 
 	    if (!remove) {
-		printf("iface %s inet %s\n", device, mode);
+                # GaborM note: $4 was manually changed from mode, so it won't get updated in our specific case
+		printf("iface %s inet %s\n", device, $4 );
 	    }	    
 	    next;
 	}	
