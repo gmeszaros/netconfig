@@ -80,14 +80,14 @@ BEGIN { start = 0;
 
 {
     # auto <device> line
-    if ($1 == "/#*/auto") {
+    if (match($1, /^#*auto.*/)) {
 	if ($2 != device) {
 	    # We come to different device
 	    # Good place to write all the settings
 	    if (targetDev) {
 		targetDev = 0;
 		if (!add && !remove) {
-		    if (mode == "static" || mode == "manual") {
+                   if (mode == "static" || mode == "manual") {
 			writeStatic(device, settings, fieldOrders);
 		    }
 		}	    
@@ -103,7 +103,7 @@ BEGIN { start = 0;
 	next;
     }
     # iface <device> .. line
-    else if ($1 == "/#*/iface") {
+    else if (match($1, /^#*iface.*/)) {
 
 	if ($2 != device) {
 	    # We come to different device
@@ -129,7 +129,7 @@ BEGIN { start = 0;
 
 	    if (!remove) {
                 # GaborM note: $4 was manually changed from mode, so it won't get updated in our specific case
-		printf("iface %s inet %s\n", device, $4 );
+		printf("%s %s inet %s\n", $1, device, $4 );
 	    }	    
 	    next;
 	}	
